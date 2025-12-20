@@ -29,6 +29,7 @@
 	<properties>
 		<java.version>21</java.version>
 		<spotless-maven-plugin.version>3.0.0</spotless-maven-plugin.version>
+		<dockerImageName>jayaraj/bookstore-${project.artifactId}</dockerImageName>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -121,6 +122,11 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<image>
+						<name>${dockerImageName}</name>
+					</image>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>com.diffplug.spotless</groupId>
