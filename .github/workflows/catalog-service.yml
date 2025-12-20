@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       working-directory: ./catalog-service
-      DOCKER_IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/bookstore-catalog-service
+      DOCKER_IMAGE_NAME: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/bookstore-catalog-service:latest
     defaults:
       run:
         working-directory: ${{ env.working-directory }}
