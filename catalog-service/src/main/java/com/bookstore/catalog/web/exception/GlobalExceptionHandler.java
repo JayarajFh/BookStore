@@ -26,7 +26,7 @@ class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         problemDetail.setProperty("timestamp", Instant.now());
         return problemDetail;
     }
-    // exception handler
+
     @ExceptionHandler(ProductNotFoundException.class)
     ProblemDetail handleProductNotFoundException(ProductNotFoundException e) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());

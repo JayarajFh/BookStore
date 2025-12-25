@@ -46,16 +46,15 @@ jobs:
       - name: Build and Push Docker Image
         if: github.ref == 'refs/heads/main'
         run: |
-          LOCAL_IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/bookstore-catalog-service:latest
-          REMOTE_IMAGE=docker.io/${{ secrets.DOCKERHUB_USERNAME }}/bookstore-catalog-service:latest
+          IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/bookstore-catalog-service:latest
 
-          echo "Building image: $LOCAL_IMAGE"
+          echo "Building image: $IMAGE"
           ./mvnw spring-boot:build-image \
             -DskipTests \
-            -Dspring-boot.build-image.imageName=$LOCAL_IMAGE
+            -Dspring-boot.build-image.imageName=$IMAGE
 
-          echo "Tagging image for docker.io"
-          docker tag $LOCAL_IMAGE $REMOTE_IMAGE
+          echo "Local images:"
+          docker images | grep bookstore-catalog-service
 
-          echo "Pushing image: $REMOTE_IMAGE"
-          docker push $REMOTE_IMAGE
+          echo "Pushing image: $IMAGE"
+          docker push $IMAGE
