@@ -3,7 +3,7 @@ name: Catalog Service
 on:
   push:
     paths:
-      - catalog-service/**
+      - BookStore/**
     branches:
       - 'main'
   pull_request:
@@ -43,7 +43,11 @@ jobs:
 
       - name: Build and Publish Docker Image
         run: |
+          IMAGE=docker.io/${{ secrets.DOCKERHUB_USERNAME }}/bookstore-catalog-service:latest
+
           ./mvnw spring-boot:build-image \
             -DskipTests \
-            -Dspring-boot.build-image.imageName=$DOCKER_IMAGE_NAME
-          docker push $DOCKER_IMAGE_NAME
+            -Dspring-boot.build-image.imageName=$IMAGE
+
+          docker images | grep bookstore-catalog-service
+          docker push $IMAGE
