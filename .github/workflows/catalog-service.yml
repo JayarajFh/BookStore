@@ -12,7 +12,6 @@ on:
 
 jobs:
   build:
-    name: Build and Push Catalog Service
     runs-on: ubuntu-latest
 
     defaults:
@@ -20,7 +19,7 @@ jobs:
         working-directory: ./catalog-service
 
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v5
 
       - name: Setup Java 21
@@ -30,10 +29,10 @@ jobs:
           java-version: 21
           cache: maven
 
-      - name: Make Maven Wrapper executable
+      - name: Make mvnw executable
         run: chmod +x mvnw
 
-      - name: Build with Maven
+      - name: Build app
         run: ./mvnw -ntp verify -DskipTests
 
       - name: Login to Docker Hub
@@ -43,18 +42,23 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and Push Docker Image
+      - name: Build and Push Image (robust)
         if: github.ref == 'refs/heads/main'
         run: |
-          IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/bookstore-catalog-service:latest
+          TARGET_IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/bookstore-catalog-service:latest
 
-          echo "Building image: $IMAGE"
-          ./mvnw spring-boot:build-image \
-            -DskipTests \
-            -Dspring-boot.build-image.imageName=$IMAGE
+          echo "Building image via Spring Boot buildpacks"
+          ./mvnw spring-boot:build-image -DskipTests
 
-          echo "Local images:"
-          docker images | grep bookstore-catalog-service
+          echo "Finding built image ID"
+          IMAGE_ID=$(docker images --format "{{.Repository}}:{{.Tag}} {{.ID}}" \
+            | grep "bookstore-catalog-service:latest" \
+            | awk '{print $2}')
 
-          echo "Pushing image: $IMAGE"
-          docker push $IMAGE
+          echo "Image ID: $IMAGE_ID"
+
+          echo "Tagging image explicitly as $TARGET_IMAGE"
+          docker tag $IMAGE_ID $TARGET_IMAGE
+
+          echo "Pushing image to Docker Hub"
+          docker push $TARGET_IMAGE
