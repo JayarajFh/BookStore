@@ -3,7 +3,7 @@ name: Catalog Service
 on:
   push:
     paths:
-      - BookStore/**
+      - catalog-service/**
     branches:
       - 'main'
   pull_request:
