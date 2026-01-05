@@ -1,6 +1,6 @@
 package com.bookstore.orders;
 
-import io.restassured.RestAssurd;
+import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -14,6 +14,6 @@ public abstract class AbstractIT {
 
     @BeforeEach
     void setUp() {
-        RestAssurd.port = port;
+        RestAssured.port = port;
     }
 }
