@@ -10,12 +10,15 @@ import org.springframework.stereotype.Component;
 public class OrderService {
     private static final Logger log = LoggerFactory.getLogger(OrderService.class);
     private final OrderRepository repository;
+    private final OrderValidator validator;
 
-    public OrderService(OrderRepository repository) {
+    public OrderService(OrderRepository repository, OrderValidator validator) {
         this.repository = repository;
+        this.validator = validator;
     }
 
     public CreateOrderResponse createOrder(String userName, CreateOrderRequest request) {
+        validator.validate(request);
         OrderEntity newOrder = OrderMapper.convertToEntity(request);
         newOrder.setUserName(userName);
         OrderEntity savedOrder = repository.save(newOrder);
